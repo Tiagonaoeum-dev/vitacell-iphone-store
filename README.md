@@ -57,7 +57,7 @@ habilidades em desenvolvimento Fullstack com Django.
 ## 🚀 Execução
 
 ``` bash
-git clone https://github.com/Tiagonaoeum/vitacell-iphone-store.git
+git clone https://github.com/Tiagonaoeum-dev/vitacell-iphone-store.git
 cd vitacell-iphone-store
 
 python -m venv venv
