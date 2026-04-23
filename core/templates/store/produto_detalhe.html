@@ -1,0 +1,305 @@
+{% extends 'store/base_store.html' %}
+{% load static %}
+{% block title %}{{ produto.modelo }} - VitaCell{% endblock %}
+
+{% block content %}
+<style>
+    .detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+    }
+    
+    .detail-image {
+        background: #f5f5f7;
+        border-radius: 2rem;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .detail-image img {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+    
+    .detail-info h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .detail-sku {
+        color: #86868b;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .detail-price {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 1rem 0;
+    }
+    
+    .detail-installment {
+        color: #86868b;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stock-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin: 1rem 0;
+    }
+    
+    .in-stock {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    
+    .low-stock {
+        background: #fff3e0;
+        color: #ed6c02;
+    }
+    
+    .out-stock {
+        background: #ffebee;
+        color: #c62828;
+    }
+    
+    .specs-list {
+        margin: 1.5rem 0;
+        padding: 1rem 0;
+        border-top: 1px solid #e8e8ed;
+        border-bottom: 1px solid #e8e8ed;
+    }
+    
+    .spec-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f5f5f7;
+    }
+    
+    .spec-label {
+        font-weight: 600;
+        color: #1d1d1f;
+    }
+    
+    .spec-value {
+        color: #86868b;
+    }
+    
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .quantity-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid #e8e8ed;
+        background: white;
+        font-size: 1.25rem;
+        cursor: pointer;
+    }
+    
+    .quantity-btn:hover {
+        background: #f5f5f7;
+    }
+    
+    .quantity-input {
+        width: 4rem;
+        text-align: center;
+        font-size: 1.125rem;
+        padding: 0.5rem;
+        border: 1px solid #e8e8ed;
+        border-radius: 0.75rem;
+    }
+    
+    .btn-buy-large {
+        width: 100%;
+        background: #0071e3;
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 1rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 0.5rem 0;
+    }
+    
+    .btn-buy-large:hover {
+        background: #0077ed;
+    }
+    
+    .btn-buy-large:disabled {
+        background: #c7c7c7;
+        cursor: not-allowed;
+    }
+    
+    .description {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: #f5f5f7;
+        border-radius: 1.5rem;
+    }
+    
+    .description h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: #0071e3;
+        text-decoration: none;
+    }
+    
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .detail-container {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+        
+        .detail-info h1 {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+
+<a href="{% url 'store_home' %}" class="back-link">← Voltar para loja</a>
+
+<div class="detail-container">
+    <div class="detail-image">
+        {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.modelo }}">
+        {% else %}
+            <i class="fas fa-mobile-alt" style="font-size: 5rem; color: #c6c6c8;"></i>
+        {% endif %}
+    </div>
+    
+    <div class="detail-info">
+        <h1>{{ produto.modelo }}</h1>
+        <div class="detail-sku">SKU: #{{ produto.id }} | {{ produto.capacidade }}</div>
+        
+        <div class="detail-price">R$ {{ produto.preco|floatformat:2 }}</div>
+        <div class="detail-installment">
+            ou 12x de R$ {{ produto.preco|divisibleby:12|floatformat:2 }} sem juros
+        </div>
+        
+        {% if produto.quantidade_estoque > 10 %}
+            <div class="stock-status in-stock">
+                <i class="fas fa-check-circle"></i> Em estoque ({{ produto.quantidade_estoque }} unidades)
+            </div>
+        {% elif produto.quantidade_estoque > 0 %}
+            <div class="stock-status low-stock">
+                <i class="fas fa-exclamation-triangle"></i> Últimas unidades! ({{ produto.quantidade_estoque }} disponíveis)
+            </div>
+        {% else %}
+            <div class="stock-status out-stock">
+                <i class="fas fa-times-circle"></i> Esgotado
+            </div>
+        {% endif %}
+        
+        <div class="specs-list">
+            <div class="spec-item">
+                <span class="spec-label">Modelo</span>
+                <span class="spec-value">{{ produto.modelo }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Capacidade</span>
+                <span class="spec-value">{{ produto.capacidade }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Cor</span>
+                <span class="spec-value">{{ produto.cor }}</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Condição</span>
+                <span class="spec-value">
+                    {% if produto.condicao == 'novo' %}
+                        ✨ Novo (Garantia de 12 meses)
+                    {% else %}
+                        🔄 Usado (Certificado)
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        
+        <div class="quantity-selector">
+            <button class="quantity-btn" onclick="decrementQuantity()">-</button>
+            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="{{ produto.quantidade_estoque }}">
+            <button class="quantity-btn" onclick="incrementQuantity()">+</button>
+        </div>
+        
+        {% if produto.quantidade_estoque > 0 %}
+            <button class="btn-buy-large" onclick="comprarAgora()">
+                <i class="fas fa-shopping-bag"></i> Comprar Agora
+            </button>
+        {% else %}
+            <button class="btn-buy-large" disabled>
+                <i class="fas fa-times-circle"></i> Indisponível
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+{% if produto.descricao %}
+<div class="description">
+    <h3>Descrição do produto</h3>
+    <p>{{ produto.descricao }}</p>
+</div>
+{% endif %}
+
+<script>
+    let currentQuantity = 1;
+    let maxStock = parseInt("{{ produto.quantidade_estoque }}");
+    let produtoId = parseInt("{{ produto.id }}");
+    
+    function incrementQuantity() {
+        if (currentQuantity < maxStock) {
+            currentQuantity = currentQuantity + 1;
+            document.getElementById('quantity').value = currentQuantity;
+        }
+    }
+    
+    function decrementQuantity() {
+        if (currentQuantity > 1) {
+            currentQuantity = currentQuantity - 1;
+            document.getElementById('quantity').value = currentQuantity;
+        }
+    }
+    
+    document.getElementById('quantity').addEventListener('change', function() {
+        let val = parseInt(this.value);
+        if (val < 1) val = 1;
+        if (val > maxStock) val = maxStock;
+        currentQuantity = val;
+        this.value = val;
+    });
+    
+    function comprarAgora() {
+        let quantidade = document.getElementById('quantity').value;
+        alert('Produto: {{ produto.modelo }}\nQuantidade: ' + quantidade + '\nValor total: R$ {{ produto.preco|floatformat:2 }}');
+    }
+</script>
+{% endblock %}

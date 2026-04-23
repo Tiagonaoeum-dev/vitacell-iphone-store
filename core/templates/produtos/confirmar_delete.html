@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Excluir Produto - VitaCell{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0 text-danger">Confirmar Exclusão</h4>
+            </div>
+            <div class="card-body text-center">
+                <p>Tem certeza que deseja excluir o produto?</p>
+                <p><strong>{{ produto.modelo }} {{ produto.capacidade }}</strong></p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'produto_lista' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

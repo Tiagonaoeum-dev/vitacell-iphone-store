@@ -1,0 +1,293 @@
+{% extends 'store/base_store.html' %}
+{% load static %}
+{% block title %}VitaCell - iPhone Store{% endblock %}
+
+{% block content %}
+<style>
+    .hero-section {
+        text-align: center;
+        padding: 3rem 0;
+        background: #fbfbfd;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        color: #1d1d1f;
+    }
+    
+    .hero-section p {
+        font-size: 1.25rem;
+        color: #86868b;
+        margin-top: 1rem;
+    }
+    
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid #e8e8ed;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
+        border-color: transparent;
+    }
+    
+    .product-image {
+        height: 220px;
+        background: #f5f5f7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+    
+    .product-image img {
+        max-width: 100%;
+        max-height: 180px;
+        object-fit: contain;
+    }
+    
+    .product-image i {
+        font-size: 4rem;
+        color: #c6c6c8;
+    }
+    
+    .product-info {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .product-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .product-specs {
+        font-size: 0.85rem;
+        color: #86868b;
+        margin-bottom: 0.5rem;
+    }
+    
+    .product-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0.5rem 0;
+        color: #1d1d1f;
+    }
+    
+    .product-condition {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+    
+    .condition-new {
+        background: #0071e3;
+        color: white;
+    }
+    
+    .condition-used {
+        background: #e8e8ed;
+        color: #1d1d1f;
+    }
+    
+    .btn-buy {
+        width: 100%;
+        background: #0071e3;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 0.5rem;
+    }
+    
+    .btn-buy:hover {
+        background: #0077ed;
+    }
+    
+    .feature-section {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin: 4rem 0;
+        padding: 2rem 0;
+        text-align: center;
+        border-top: 1px solid #e8e8ed;
+    }
+    
+    .feature i {
+        font-size: 2rem;
+        color: #0071e3;
+        margin-bottom: 1rem;
+    }
+    
+    .feature h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feature p {
+        font-size: 0.85rem;
+        color: #86868b;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 1rem;
+        max-width: 500px;
+        width: 90%;
+        padding: 2rem;
+    }
+    
+    .modal-content h2 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e8e8ed;
+        border-radius: 0.5rem;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #0071e3;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section h1 {
+            font-size: 2rem;
+        }
+        .products-grid {
+            grid-template-columns: 1fr;
+        }
+        .feature-section {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+</style>
+
+<div class="hero-section">
+    <h1>iPhone. Love the power.</h1>
+    <p>Os melhores iPhones novos e usados com garantia VitaCell</p>
+</div>
+
+<div class="products-grid">
+    {% for produto in produtos %}
+    <div class="product-card" onclick="window.location.href='/produto/{{ produto.id }}/'">
+        <div class="product-image">
+            {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.modelo }}">
+            {% else %}
+                <i class="fas fa-mobile-alt"></i>
+            {% endif %}
+        </div>
+        <div class="product-info">
+            <div class="product-title">{{ produto.modelo }}</div>
+            <div class="product-specs">{{ produto.capacidade }} | {{ produto.cor }}</div>
+            <div class="product-price">R$ {{ produto.preco|floatformat:2 }}</div>
+            <div class="product-condition {% if produto.condicao == 'novo' %}condition-new{% else %}condition-used{% endif %}">
+                {% if produto.condicao == 'novo' %}Novo{% else %}Usado{% endif %}
+            </div>
+            <button class="btn-buy" onclick="event.stopPropagation(); comprarProduto('{{ produto.id }}')">
+                <i class="fas fa-shopping-bag"></i> Comprar
+            </button>
+        </div>
+    </div>
+    {% empty %}
+    <p style="text-align: center; grid-column: 1/-1;">Nenhum produto disponível no momento.</p>
+    {% endfor %}
+</div>
+
+<div class="feature-section">
+    <div class="feature">
+        <i class="fas fa-truck"></i>
+        <h4>Frete Grátis</h4>
+        <p>Para todo o Brasil</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-shield-alt"></i>
+        <h4>Garantia de 12 meses</h4>
+        <p>Em todos os produtos</p>
+    </div>
+    <div class="feature">
+        <i class="fas fa-undo-alt"></i>
+        <h4>7 dias de teste</h4>
+        <p>Devolução garantida</p>
+    </div>
+</div>
+
+<div id="buyModal" class="modal">
+    <div class="modal-content">
+        <h2>Finalizar Compra</h2>
+        <form method="post" action="{% url 'store_comprar' %}">
+            {% csrf_token %}
+            <input type="hidden" name="produto_id" id="produto_id">
+            <input type="text" name="nome" placeholder="Nome Completo" class="form-control" required>
+            <input type="email" name="email" placeholder="E-mail" class="form-control" required>
+            <input type="text" name="telefone" placeholder="Telefone" class="form-control" required>
+            <textarea name="endereco" placeholder="Endereço Completo" class="form-control" rows="2" required></textarea>
+            <input type="number" name="quantidade" value="1" min="1" class="form-control" required>
+            <button type="submit" class="btn-buy">Confirmar Compra</button>
+            <button type="button" class="btn-buy" style="background: #86868b; margin-top: 0.5rem;" onclick="fecharModal()">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function comprarProduto(produtoId) {
+        document.getElementById('produto_id').value = produtoId;
+        document.getElementById('buyModal').style.display = 'flex';
+    }
+    
+    function fecharModal() {
+        document.getElementById('buyModal').style.display = 'none';
+    }
+    
+    window.onclick = function(event) {
+        var modal = document.getElementById('buyModal');
+        if (event.target === modal) {
+            fecharModal();
+        }
+    }
+</script>
+{% endblock %}

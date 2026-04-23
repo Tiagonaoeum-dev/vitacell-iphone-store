@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Excluir Cliente - VitaCell{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h4 class="mb-0 text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Confirmar Exclusão</h4>
+            </div>
+            <div class="card-body text-center">
+                <p class="mb-3">Tem certeza que deseja excluir o cliente?</p>
+                <p class="mb-4">
+                    <strong>{{ cliente.usuario.get_full_name }}</strong><br>
+                    <span class="text-muted">CPF: {{ cliente.cpf }}</span><br>
+                    <span class="text-muted">Email: {{ cliente.usuario.email }}</span>
+                </p>
+                <p class="text-danger mb-4">Esta ação não pode ser desfeita e todas as vendas associadas serão afetadas!</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'cliente_lista' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
