@@ -83,14 +83,33 @@ python manage.py runserver
 
 ------------------------------------------------------------------------
 
-## 🔌 API
+## 🔗 Rotas do Sistema
 
-  Método   Endpoint
-  -------- ---------------------
-  GET      /api/produtos/
-  POST     /api/produtos/
-  PUT      /api/produtos/{id}/
-  DELETE   /api/produtos/{id}/
+### Loja (Clientes)
+- `http://127.0.0.1:8000/store/` - Página inicial da loja
+- `http://127.0.0.1:8000/produto/1/` - Detalhes do produto
+
+### Administração
+- `http://127.0.0.1:8000/login/` - Login
+- `http://127.0.0.1:8000/` - Dashboard
+- `http://127.0.0.1:8000/logout/` - Logout
+
+### Produtos
+- `http://127.0.0.1:8000/produtos/` - Listar
+- `http://127.0.0.1:8000/produtos/novo/` - Cadastrar
+
+### Clientes
+- `http://127.0.0.1:8000/clientes/` - Listar
+- `http://127.0.0.1:8000/clientes/novo/` - Cadastrar
+
+### Vendas
+- `http://127.0.0.1:8000/vendas/` - Listar
+- `http://127.0.0.1:8000/vendas/nova/` - Registrar
+
+### API
+- `http://127.0.0.1:8000/api/produtos/` - Produtos (JSON)
+- `http://127.0.0.1:8000/api/clientes/` - Clientes (JSON)
+- `http://127.0.0.1:8000/api/vendas/` - Vendas (JSON)
 
 ------------------------------------------------------------------------
 
